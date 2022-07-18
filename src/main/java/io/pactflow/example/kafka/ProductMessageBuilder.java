@@ -17,7 +17,9 @@ public class ProductMessageBuilder {
 
   public Message<String> build() throws JsonProcessingException {
     return MessageBuilder.withPayload(this.mapper.writeValueAsString(this.product))
-        .setHeader(KafkaHeaders.TOPIC, "products").setHeader("Content-Type", "application/json; charset=utf-8")
+        .setHeader(KafkaHeaders.TOPIC, "products")
+            .setHeader("test","test")
+            .setHeader("Content-Type", "application/xml; charset=utf-8")
         .build();
   }
 
