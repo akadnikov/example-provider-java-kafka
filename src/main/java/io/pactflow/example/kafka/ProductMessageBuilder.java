@@ -19,7 +19,7 @@ public class ProductMessageBuilder {
     return MessageBuilder.withPayload(this.mapper.writeValueAsString(this.product))
         .setHeader(KafkaHeaders.TOPIC, "products")
             .setHeader("test","test")
-            .setHeader("Content-Type", "application/xml; charset=utf-8")
+            .setHeader("Content-Type", "application/json; charset=utf-8")
         .build();
   }
 

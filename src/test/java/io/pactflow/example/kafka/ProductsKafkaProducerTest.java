@@ -8,9 +8,7 @@ import au.com.dius.pact.provider.junit5.MessageTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
 import au.com.dius.pact.provider.junitsupport.Provider;
-import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
-import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
-import au.com.dius.pact.provider.junitsupport.loader.VersionSelector;
+import au.com.dius.pact.provider.junitsupport.loader.*;
 
 import java.util.HashMap;
 
@@ -25,11 +23,23 @@ import org.springframework.messaging.Message;
 
 @Provider("pactflow-example-provider-java-kafka")
 @PactBroker(
-        url = "http://localhost:8000",
-        authentication = @PactBrokerAuth(username = "pact_workshop", password = "pact_workshop")
+        enablePendingPacts = "true",
+        providerBranch = "master",
+        includeWipPactsSince = "2020-01-01"
 )
   public class ProductsKafkaProducerTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProductsKafkaProducerTest.class);
+
+  @PactBrokerConsumerVersionSelectors
+  public static SelectorBuilder consumerVersionSelectors() {
+    var branch = System.getenv().getOrDefault("CONSUMER_BRANCH_NAME", "master");
+
+    return new SelectorBuilder()
+            .deployedOrReleased()
+            .mainBranch()
+            .matchingBranch()
+            .branch(branch);
+  }
 
   @TestTemplate
   @ExtendWith(PactVerificationInvocationContextProvider.class)

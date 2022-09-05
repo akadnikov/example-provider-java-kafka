@@ -54,12 +54,17 @@ def getGitBranch = { ->
 
 test {
 	useJUnitPlatform()
+//jvmArgs = ["-Xms128m", "-Xmx128m","-XX:+HeapDumpOnOutOfMemoryError"]
 
 	if (System.getProperty('pactPublishResults') == 'true') {
-		systemProperty 'pact.provider.version', version + "+" + getGitHash()
-		systemProperty 'pact.provider.tag', getGitBranch()
+		systemProperty 'pact.provider.version', project.getProperties().getOrDefault("pacticipantVersion", "v" + version + "-" + getGitHash())
+		systemProperty 'pact.provider.branch', project.getProperties().getOrDefault("pacticipantBranch", getGitBranch())
 		systemProperty 'pact.verifier.publishResults', 'true'
 	}
+	systemProperty 'pactbroker.url', "${pactBrokerUrl}"
+	systemProperty 'pactbroker.auth.username', "${pactBrokerUsername}"
+	systemProperty 'pactbroker.auth.password', "${pactBrokerPassword}"
+
 }
 
 //pact {
